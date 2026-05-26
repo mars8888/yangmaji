@@ -16,10 +16,24 @@ import os
 
 def remove_emoji(text):
     """移除所有 Emoji 字符（防止微信 API 返回 45166 错误）"""
-    # 移除 Unicode 中的 Emoji 范围
-    return re.sub(
-        r'[\U00010000-\U0010ffff]', '', text
+    # 移除常见 Emoji 范围（不包括正常中文字符）
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F1E0-\U0001F1FF"  # flags
+        "\U00002702-\U000027B0"
+        "\U000024C2-\U0001F251"
+        "\U0001f900-\U0001f9FF"  # supplemental
+        "\U0001fa00-\U0001fa6F"  # chess
+        "\U0001fa70-\U0001faff"  # symbols extended
+        "\U00002600-\U000026FF"  # misc symbols
+        "\U00002300-\U000023FF"  # technical
+        "]+",
+        re.UNICODE
     )
+    return emoji_pattern.sub('', text)
 
 
 def escape_html(text):
